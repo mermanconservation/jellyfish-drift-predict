@@ -32,7 +32,7 @@ interface JellyfishFormProps {
 
 export const JellyfishForm = ({ onObservationSubmit, isLoading }: JellyfishFormProps) => {
   const { toast } = useToast();
-  const [apiKey, setApiKey] = useState(localStorage.getItem('openweather_api_key') || '');
+  const [apiKey, setApiKey] = useState(localStorage.getItem('openweather_api_key') || '1d8105100539d60fd8e887dd964e8152');
   
   const {
     register,
