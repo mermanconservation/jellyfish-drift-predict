@@ -26,7 +26,7 @@ interface DriftMapProps {
 export const DriftMap = ({ observation, predictions, isVisible, isLoading = false }: DriftMapProps) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
-  const [mapboxToken, setMapboxToken] = useState(localStorage.getItem('mapbox_token') || '');
+  const [mapboxToken, setMapboxToken] = useState(localStorage.getItem('mapbox_token') || 'pk.eyJ1IjoibWVybWFuY29uc2VydmF0aW9uIiwiYSI6ImNtZG1xY2wyYzFmc3EyanNkb3Y5OXpxODQifQ.o0ekxYD0dbWg3cUJXSl0Aw');
   const [showMap, setShowMap] = useState(false);
   const { toast } = useToast();
 
