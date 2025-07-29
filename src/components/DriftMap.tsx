@@ -56,10 +56,8 @@ export const DriftMap = ({ observation, predictions, isVisible, isLoading = fals
           'space-color': 'rgb(11, 11, 25)',
         });
 
-        updateMapData();
+        setMapInitialized(true);
       });
-
-      setMapInitialized(true);
       toast({
         title: "Map loaded",
         description: "Jellyfish drift visualization ready",
@@ -75,7 +73,7 @@ export const DriftMap = ({ observation, predictions, isVisible, isLoading = fals
   };
 
   const updateMapData = () => {
-    if (!map.current || !observation) return;
+    if (!map.current || !observation || !map.current.isStyleLoaded()) return;
 
     // Clear existing layers and sources
     ['drift-path', 'prediction-points', 'observation-point'].forEach(id => {
@@ -239,7 +237,7 @@ export const DriftMap = ({ observation, predictions, isVisible, isLoading = fals
   }, [isVisible, mapboxToken, mapInitialized]);
 
   useEffect(() => {
-    if (mapInitialized && map.current) {
+    if (mapInitialized && map.current && map.current.isStyleLoaded()) {
       updateMapData();
     }
   }, [observation, predictions, mapInitialized]);
