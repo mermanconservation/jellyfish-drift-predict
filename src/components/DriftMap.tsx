@@ -20,9 +20,10 @@ interface DriftMapProps {
   observation: JellyfishObservation | null;
   predictions: DriftPrediction[];
   isVisible: boolean;
+  isLoading?: boolean;
 }
 
-export const DriftMap = ({ observation, predictions, isVisible }: DriftMapProps) => {
+export const DriftMap = ({ observation, predictions, isVisible, isLoading = false }: DriftMapProps) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const [mapboxToken, setMapboxToken] = useState(localStorage.getItem('mapbox_token') || '');
@@ -250,6 +251,9 @@ export const DriftMap = ({ observation, predictions, isVisible }: DriftMapProps)
         <CardTitle className="flex items-center gap-2">
           <MapPin className="w-5 h-5 text-ocean" />
           Drift Prediction Map
+          {isLoading && (
+            <span className="text-sm text-muted-foreground ml-auto">Analyzing...</span>
+          )}
         </CardTitle>
       </CardHeader>
       

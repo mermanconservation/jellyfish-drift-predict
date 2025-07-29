@@ -35,6 +35,7 @@ const Index = () => {
 
     setIsLoading(true);
     setShowResults(false);
+    setObservation(newObservation); // Set observation immediately for map display
 
     try {
       // Validate API key
@@ -164,10 +165,11 @@ const Index = () => {
             <DriftMap 
               observation={observation}
               predictions={predictions}
-              isVisible={showResults}
+              isVisible={showResults || isLoading}
+              isLoading={isLoading}
             />
             
-            {!showResults && (
+            {!showResults && !isLoading && (
               <Card className="backdrop-blur-sm bg-card/90 border-border/50">
                 <CardContent className="p-8 text-center space-y-4">
                   <div className="w-16 h-16 mx-auto bg-muted rounded-full flex items-center justify-center">
