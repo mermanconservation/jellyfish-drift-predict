@@ -7,7 +7,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { MapPin, Waves, Fish } from 'lucide-react';
+import { MapPin, Waves, Fish, AlertTriangle } from 'lucide-react';
+import { LandSeaService } from '@/services/landSeaService';
 
 const formSchema = z.object({
   latitude: z.number().min(-90).max(90),
@@ -72,14 +73,46 @@ export const JellyfishForm = ({ onObservationSubmit, isLoading }: JellyfishFormP
     }
   };
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = async (data: FormData) => {
     if (data.apiKey) {
       localStorage.setItem('openweather_api_key', data.apiKey);
     }
 
+    // Check if coordinates are over water
+    const isOverWater = await LandSeaService.isOverWater(data.latitude, data.longitude);
+    
+    let finalLatitude = data.latitude;
+    let finalLongitude = data.longitude;
+    
+    if (!isOverWater) {
+      // Get last known sea coordinates
+      const lastSeaCoords = LandSeaService.getLastSeaCoordinates();
+      
+      if (lastSeaCoords) {
+        finalLatitude = lastSeaCoords.latitude;
+        finalLongitude = lastSeaCoords.longitude;
+        
+        toast({
+          title: "Land coordinates detected",
+          description: `Using previous sea coordinates: ${finalLatitude.toFixed(6)}, ${finalLongitude.toFixed(6)}`,
+          variant: "default",
+        });
+      } else {
+        toast({
+          title: "Land coordinates detected",
+          description: "No previous sea coordinates found. Please enter coordinates over water.",
+          variant: "destructive",
+        });
+        return;
+      }
+    } else {
+      // Store valid sea coordinates for future use
+      LandSeaService.storeSeaCoordinates(data.latitude, data.longitude);
+    }
+
     const observation: JellyfishObservation = {
-      latitude: data.latitude,
-      longitude: data.longitude,
+      latitude: finalLatitude,
+      longitude: finalLongitude,
       jellyfishCount: data.jellyfishCount,
       timestamp: new Date(),
     };
