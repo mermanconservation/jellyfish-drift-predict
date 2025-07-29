@@ -21,7 +21,7 @@ export class LandSeaService {
       }
       
       // Check if the response indicates water bodies
-      const waterBodies = ['ocean', 'sea', 'bay', 'gulf', 'strait', 'channel', 'sound'];
+      const waterBodies = ['ocean', 'sea', 'bay', 'gulf', 'strait', 'channel', 'sound', 'mediterranean', 'atlantic', 'pacific', 'indian', 'arctic'];
       const displayName = data.display_name?.toLowerCase() || '';
       
       // If display name contains water body terms, it's over water
@@ -29,8 +29,23 @@ export class LandSeaService {
         return true;
       }
       
-      // If it has a country, state, or city, it's likely on land
-      if (data.address.country || data.address.state || data.address.city) {
+      // Check the address components for water features
+      const addressComponents = Object.values(data.address || {}).join(' ').toLowerCase();
+      if (waterBodies.some(water => addressComponents.includes(water))) {
+        return true;
+      }
+      
+      // Check if the place type indicates water
+      const waterPlaceTypes = ['water', 'sea', 'ocean', 'bay', 'gulf', 'strait'];
+      const placeType = data.type?.toLowerCase() || '';
+      const category = data.category?.toLowerCase() || '';
+      
+      if (waterPlaceTypes.includes(placeType) || waterPlaceTypes.includes(category)) {
+        return true;
+      }
+      
+      // If it has specific land features (road, building, etc), it's likely on land
+      if (data.address.road || data.address.house_number || data.address.building) {
         return false;
       }
       
