@@ -27,7 +27,7 @@ export const DriftMap = ({ observation, predictions, isVisible, isLoading = fals
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const [mapboxToken, setMapboxToken] = useState(localStorage.getItem('mapbox_token') || 'pk.eyJ1IjoibWVybWFuY29uc2VydmF0aW9uIiwiYSI6ImNtZG1xY2wyYzFmc3EyanNkb3Y5OXpxODQifQ.o0ekxYD0dbWg3cUJXSl0Aw');
-  const [showMap, setShowMap] = useState(false);
+  const [mapInitialized, setMapInitialized] = useState(false);
   const { toast } = useToast();
 
   const initializeMap = () => {
@@ -59,12 +59,13 @@ export const DriftMap = ({ observation, predictions, isVisible, isLoading = fals
         updateMapData();
       });
 
-      setShowMap(true);
+      setMapInitialized(true);
       toast({
         title: "Map loaded",
         description: "Jellyfish drift visualization ready",
       });
     } catch (error) {
+      console.error('Map initialization error:', error);
       toast({
         title: "Map error",
         description: "Invalid Mapbox token. Please check your token.",
@@ -232,10 +233,16 @@ export const DriftMap = ({ observation, predictions, isVisible, isLoading = fals
   };
 
   useEffect(() => {
-    if (showMap && map.current) {
+    if (isVisible && mapboxToken && !mapInitialized && mapContainer.current) {
+      initializeMap();
+    }
+  }, [isVisible, mapboxToken, mapInitialized]);
+
+  useEffect(() => {
+    if (mapInitialized && map.current) {
       updateMapData();
     }
-  }, [observation, predictions, showMap]);
+  }, [observation, predictions, mapInitialized]);
 
   useEffect(() => {
     return () => {
@@ -258,81 +265,32 @@ export const DriftMap = ({ observation, predictions, isVisible, isLoading = fals
       </CardHeader>
       
       <CardContent className="space-y-4">
-        {!showMap ? (
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="mapbox-token">Mapbox Access Token</Label>
-              <Input
-                id="mapbox-token"
-                type="password"
-                placeholder="Enter your Mapbox token"
-                value={mapboxToken}
-                onChange={(e) => setMapboxToken(e.target.value)}
-              />
-              <p className="text-xs text-muted-foreground">
-                Get your free token from{' '}
-                <a 
-                  href="https://account.mapbox.com/access-tokens/" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-ocean hover:underline"
-                >
-                  Mapbox
-                </a>
-              </p>
-            </div>
-            
-            <Button 
-              onClick={initializeMap} 
-              disabled={!mapboxToken}
-              className="w-full ocean-gradient hover:opacity-90"
-            >
-              <Eye className="w-4 h-4 mr-2" />
-              Load Map
-            </Button>
+        <div className="flex justify-between items-center">
+          <div className="text-sm text-muted-foreground">
+            {observation && `Tracking ${observation.jellyfishCount} jellyfish`}
           </div>
-        ) : (
-          <>
-            <div className="flex justify-between items-center">
-              <div className="text-sm text-muted-foreground">
-                {observation && `Tracking ${observation.jellyfishCount} jellyfish`}
-              </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  setShowMap(false);
-                  map.current?.remove();
-                  map.current = null;
-                }}
-              >
-                <EyeOff className="w-4 h-4 mr-2" />
-                Hide Map
-              </Button>
+        </div>
+        
+        <div 
+          ref={mapContainer} 
+          className="w-full h-96 rounded-lg border border-border overflow-hidden"
+        />
+        
+        {predictions.length > 0 && (
+          <div className="grid grid-cols-3 gap-2 text-xs">
+            <div className="flex items-center gap-1">
+              <div className="w-3 h-3 bg-coral rounded-full"></div>
+              <span>Current</span>
             </div>
-            
-            <div 
-              ref={mapContainer} 
-              className="w-full h-96 rounded-lg border border-border overflow-hidden"
-            />
-            
-            {predictions.length > 0 && (
-              <div className="grid grid-cols-3 gap-2 text-xs">
-                <div className="flex items-center gap-1">
-                  <div className="w-3 h-3 bg-coral rounded-full"></div>
-                  <span>Current</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <div className="w-3 h-3 bg-accent rounded-full"></div>
-                  <span>Predicted</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <div className="w-3 h-1 bg-accent"></div>
-                  <span>Drift Path</span>
-                </div>
-              </div>
-            )}
-          </>
+            <div className="flex items-center gap-1">
+              <div className="w-3 h-3 bg-accent rounded-full"></div>
+              <span>Predicted</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="w-3 h-1 bg-accent"></div>
+              <span>Drift Path</span>
+            </div>
+          </div>
         )}
       </CardContent>
     </Card>
