@@ -39,7 +39,7 @@ export const DriftMap = ({ observation, predictions, isVisible, isLoading = fals
     try {
       map.current = new mapboxgl.Map({
         container: mapContainer.current,
-        style: 'mapbox://styles/mapbox/satellite-streets-v12',
+        style: 'mapbox://styles/mapbox/streets-v12',
         center: observation ? [observation.longitude, observation.latitude] : [0, 0],
         zoom: observation ? 8 : 2,
         projection: 'globe' as any,
