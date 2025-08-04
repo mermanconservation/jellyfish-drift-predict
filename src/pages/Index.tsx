@@ -6,7 +6,9 @@ import { WeatherService } from '@/services/weatherService';
 import { DriftService, DriftPrediction } from '@/services/driftService';
 import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent } from '@/components/ui/card';
-import { Waves, Fish, Wind } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Waves, Fish, Wind, Heart } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import jellyfishHero from '@/assets/jellyfish-hero.jpg';
 
 interface JellyfishObservation {
@@ -112,6 +114,15 @@ const Index = () => {
             <p className="text-xl lg:text-2xl text-primary-foreground/90 max-w-2xl mx-auto leading-relaxed">
               Track <em>Pelagia noctiluca</em> sightings and predict their movement patterns using real-time wind data and ocean current models
             </p>
+
+            <div className="flex justify-center mt-8">
+              <Button asChild size="lg" variant="outline" className="bg-white/10 backdrop-blur-sm border-white/20 text-primary-foreground hover:bg-white/20">
+                <Link to="/donate" className="flex items-center gap-2">
+                  <Heart className="w-5 h-5 text-coral" />
+                  Support Our Research
+                </Link>
+              </Button>
+            </div>
 
             {/* Feature highlights */}
             <div className="grid md:grid-cols-3 gap-6 mt-12">
