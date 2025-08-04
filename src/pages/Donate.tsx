@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { CreditCard, Heart, Building2, Copy } from 'lucide-react';
+import { CreditCard, Heart, Building2, Copy, ArrowLeft } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 
 const Donate = () => {
@@ -17,6 +18,16 @@ const Donate = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-ocean via-primary to-ocean-deep">
       <div className="container mx-auto px-6 py-16">
+        {/* Back Button */}
+        <div className="mb-8">
+          <Button asChild variant="ghost" className="text-primary-foreground hover:bg-white/10">
+            <Link to="/" className="flex items-center gap-2">
+              <ArrowLeft className="w-4 h-4" />
+              Back to Dashboard
+            </Link>
+          </Button>
+        </div>
+        
         <div className="max-w-4xl mx-auto space-y-8">
           {/* Header */}
           <div className="text-center space-y-4">
