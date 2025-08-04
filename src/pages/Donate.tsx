@@ -15,7 +15,7 @@ const Donate = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-wave via-foam to-background">
+    <div className="min-h-screen bg-gradient-to-br from-ocean via-primary to-ocean-deep">
       <div className="container mx-auto px-6 py-16">
         <div className="max-w-4xl mx-auto space-y-8">
           {/* Header */}
