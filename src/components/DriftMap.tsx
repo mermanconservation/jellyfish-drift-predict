@@ -463,7 +463,12 @@ export const DriftMap = ({ observation, predictions, isVisible, isLoading = fals
 
   useEffect(() => {
     return () => {
-      map.current?.remove();
+      try {
+        map.current?.remove();
+      } catch (e) {
+        // Mapbox may throw during cleanup if style isn't fully loaded
+      }
+      map.current = null;
     };
   }, []);
 
