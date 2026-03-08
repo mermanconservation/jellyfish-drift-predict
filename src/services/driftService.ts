@@ -59,7 +59,8 @@ export class DriftService {
       
       if (!isWater) {
         hitLand = true;
-        
+        originalLat = rawPosition.latitude;
+        originalLon = rawPosition.longitude;
         // Binary search to find the last water point along this path
         const waterEdge = await this.findWaterEdge(currentLat, currentLon, driftDistance, driftDirection);
         
