@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { MapPin, Waves, Fish, AlertTriangle } from 'lucide-react';
-import { LandSeaService } from '@/services/landSeaService';
+
 
 const formSchema = z.object({
   latitude: z.number().min(-90).max(90),
