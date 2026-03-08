@@ -262,6 +262,25 @@ export const DriftMap = ({ observation, predictions, isVisible, isLoading = fals
           .addTo(map.current!);
       }
     });
+
+    map.current.on('click', 'deflected-points', (e) => {
+      if (e.features && e.features[0]) {
+        const props = e.features[0].properties;
+        new mapboxgl.Popup()
+          .setLngLat(e.lngLat)
+          .setHTML(`
+            <div class="p-2">
+              <h3 class="font-bold text-sm" style="color: #f59e0b;">⚠ Day ${props?.day} — Deflected</h3>
+              <p class="text-xs">Path redirected to avoid landmass.</p>
+              <p class="text-xs">The jellyfish drift was rerouted along the coast.</p>
+              <hr style="margin: 4px 0; border-color: #eee;" />
+              <p class="text-xs">Distance: ${props?.distance.toFixed(1)} km</p>
+              <p class="text-xs">Wind: ${props?.windSpeed.toFixed(1)} m/s</p>
+            </div>
+          `)
+          .addTo(map.current!);
+      }
+    });
   };
 
   useEffect(() => {
