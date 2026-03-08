@@ -9,7 +9,9 @@ export interface DriftPrediction {
   windSpeed: number;
   windDirection: number;
   distance: number;
-  hitLand?: boolean; // true if this prediction was deflected from land
+  hitLand?: boolean;
+  originalLatitude?: number;  // where it would have gone if not blocked by land
+  originalLongitude?: number;
 }
 
 export interface JellyfishObservation {
