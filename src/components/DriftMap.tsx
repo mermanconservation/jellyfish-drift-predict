@@ -182,6 +182,7 @@ export const DriftMap = ({ observation, predictions, isVisible, isLoading = fals
           'heatmap-opacity': 0.8,
         },
       });
+    }
 
     if (predictions.length > 0) {
       // Create drift path
