@@ -1,80 +1,50 @@
-// Service to determine if coordinates are on land or sea
+// Service to determine if coordinates are on land or sea using Mapbox Tilequery API
 export class LandSeaService {
-  // Simple heuristic: use reverse geocoding to check if coordinates are over water
+  private static cache = new Map<string, boolean>();
+
+  private static getCacheKey(lat: number, lon: number): string {
+    // Round to ~100m precision for caching
+    return `${lat.toFixed(3)},${lon.toFixed(3)}`;
+  }
+
   static async isOverWater(latitude: number, longitude: number): Promise<boolean> {
+    const key = this.getCacheKey(latitude, longitude);
+    if (this.cache.has(key)) {
+      return this.cache.get(key)!;
+    }
+
     try {
-      // Use OpenStreetMap Nominatim API for reverse geocoding
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=10&addressdetails=1`
-      );
-      
-      if (!response.ok) {
-        // If API fails, assume coordinates are valid (over water)
+      const token = localStorage.getItem('mapbox_token');
+      if (!token) {
+        console.warn('No Mapbox token for land/sea detection');
         return true;
       }
+
+      // Use Mapbox Tilequery API to check the water layer in mapbox-streets-v8
+      const url = `https://api.mapbox.com/v4/mapbox.mapbox-streets-v8/tilequery/${longitude},${latitude}.json?layers=water&radius=0&access_token=${token}`;
       
+      const response = await fetch(url);
+      if (!response.ok) {
+        console.warn('Mapbox Tilequery failed:', response.status);
+        return true;
+      }
+
       const data = await response.json();
       
-      // If no address is found, likely over water
-      if (!data.address) {
-        return true;
-      }
+      // If features are returned from the water layer, the point is over water
+      const isWater = data.features && data.features.length > 0;
       
-      // Check if the response indicates water bodies
-      const waterBodies = ['ocean', 'sea', 'bay', 'gulf', 'strait', 'channel', 'sound', 'mediterranean', 'atlantic', 'pacific', 'indian', 'arctic'];
-      const displayName = data.display_name?.toLowerCase() || '';
+      console.log(`Land/Sea check: ${latitude.toFixed(4)}, ${longitude.toFixed(4)} → ${isWater ? 'WATER' : 'LAND'}`);
       
-      // If display name contains water body terms, it's over water
-      if (waterBodies.some(water => displayName.includes(water))) {
-        return true;
-      }
-      
-      // Check the address components for water features
-      const addressComponents = Object.values(data.address || {}).join(' ').toLowerCase();
-      if (waterBodies.some(water => addressComponents.includes(water))) {
-        return true;
-      }
-      
-      // Check if the place type indicates water
-      const waterPlaceTypes = ['water', 'sea', 'ocean', 'bay', 'gulf', 'strait'];
-      const placeType = data.type?.toLowerCase() || '';
-      const category = data.category?.toLowerCase() || '';
-      
-      if (waterPlaceTypes.includes(placeType) || waterPlaceTypes.includes(category)) {
-        return true;
-      }
-      
-      // If it has specific land features (road, building, etc), it's likely on land
-      if (data.address.road || data.address.house_number || data.address.building) {
-        return false;
-      }
-      
-      // Default to water if uncertain
-      return true;
-      
+      this.cache.set(key, isWater);
+      return isWater;
     } catch (error) {
       console.warn('Land/Sea detection failed:', error);
-      // If service fails, assume coordinates are valid (over water)
       return true;
     }
   }
-  
-  // Get stored sea coordinates from localStorage
-  static getLastSeaCoordinates(): { latitude: number; longitude: number } | null {
-    try {
-      const stored = localStorage.getItem('last_sea_coordinates');
-      return stored ? JSON.parse(stored) : null;
-    } catch {
-      return null;
-    }
-  }
-  
-  // Store sea coordinates in localStorage
-  static storeSeaCoordinates(latitude: number, longitude: number): void {
-    try {
-      localStorage.setItem('last_sea_coordinates', JSON.stringify({ latitude, longitude }));
-    } catch (error) {
-      console.warn('Failed to store sea coordinates:', error);
-    }
+
+  static clearCache(): void {
+    this.cache.clear();
   }
 }
