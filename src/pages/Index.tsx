@@ -88,7 +88,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-wave via-foam to-background">
+    <div className="min-h-screen" style={{ backgroundColor: '#0a2540' }}>
       {/* Hero Section */}
       <div className="relative overflow-hidden">
         <div 
