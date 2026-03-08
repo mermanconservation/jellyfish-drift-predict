@@ -76,7 +76,7 @@ export const DriftMap = ({ observation, predictions, isVisible, isLoading = fals
     if (!map.current || !observation || !map.current.isStyleLoaded()) return;
 
     // Clear existing layers and sources
-    ['drift-path', 'prediction-points', 'observation-point'].forEach(id => {
+    ['drift-path', 'prediction-points', 'deflected-points', 'observation-point'].forEach(id => {
       if (map.current?.getLayer(id)) {
         map.current.removeLayer(id);
       }
