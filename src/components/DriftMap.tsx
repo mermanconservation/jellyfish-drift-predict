@@ -309,7 +309,7 @@ export const DriftMap = ({ observation, predictions, isVisible, isLoading = fals
         />
         
         {predictions.length > 0 && (
-          <div className="grid grid-cols-3 gap-2 text-xs">
+          <div className="grid grid-cols-4 gap-2 text-xs">
             <div className="flex items-center gap-1">
               <div className="w-3 h-3 bg-coral rounded-full"></div>
               <span>Current</span>
@@ -317,6 +317,10 @@ export const DriftMap = ({ observation, predictions, isVisible, isLoading = fals
             <div className="flex items-center gap-1">
               <div className="w-3 h-3 bg-accent rounded-full"></div>
               <span>Predicted</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: '#f59e0b' }}></div>
+              <span>Deflected</span>
             </div>
             <div className="flex items-center gap-1">
               <div className="w-3 h-1 bg-accent"></div>
