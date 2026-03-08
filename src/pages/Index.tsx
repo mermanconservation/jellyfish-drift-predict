@@ -64,7 +64,7 @@ const Index = () => {
       });
 
       // Calculate drift predictions
-      const driftPredictions = DriftService.predictDrift(newObservation, windData, 5);
+      const driftPredictions = await DriftService.predictDrift(newObservation, windData, 5);
 
       setObservation(newObservation);
       setPredictions(driftPredictions);
