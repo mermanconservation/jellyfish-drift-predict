@@ -16,7 +16,7 @@ const Donate = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-ocean via-primary to-ocean-deep">
+    <div className="min-h-screen" style={{ backgroundColor: '#0a2540' }}>
       <div className="container mx-auto px-6 py-16">
         {/* Back Button */}
         <div className="mb-8">
