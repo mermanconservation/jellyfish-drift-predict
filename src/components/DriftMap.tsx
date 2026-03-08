@@ -114,6 +114,75 @@ export const DriftMap = ({ observation, predictions, isVisible, isLoading = fals
       },
     });
 
+    // Heatmap showing jellyfish spread based on count
+    if (predictions.length > 0) {
+      // Spread factor: more jellyfish = larger spread area
+      // Weight each point by how many jellyfish are likely there (decreasing over days as they spread)
+      const count = observation.jellyfishCount;
+      const heatPoints = [
+        {
+          coordinates: [observation.longitude, observation.latitude],
+          weight: 1.0, // Full concentration at origin
+        },
+        ...predictions.map(p => ({
+          coordinates: [p.longitude, p.latitude],
+          weight: Math.max(0.2, 1 - (p.day * 0.15)), // Spread thins out over days
+        })),
+      ];
+
+      map.current.addSource('jellyfish-heatmap', {
+        type: 'geojson',
+        data: {
+          type: 'FeatureCollection',
+          features: heatPoints.map(pt => ({
+            type: 'Feature',
+            geometry: {
+              type: 'Point',
+              coordinates: pt.coordinates,
+            },
+            properties: {
+              weight: pt.weight,
+              count: count,
+            },
+          })),
+        },
+      });
+
+      // Heatmap radius scales with jellyfish count
+      // 10 jellyfish = small, 1000+ = large spread
+      const baseRadius = Math.min(60, Math.max(15, Math.log10(count) * 20));
+
+      map.current.addLayer({
+        id: 'jellyfish-heatmap',
+        type: 'heatmap',
+        source: 'jellyfish-heatmap',
+        paint: {
+          'heatmap-weight': ['get', 'weight'],
+          'heatmap-intensity': [
+            'interpolate', ['linear'], ['zoom'],
+            0, 0.5,
+            9, 1.5,
+          ],
+          'heatmap-radius': [
+            'interpolate', ['linear'], ['zoom'],
+            0, baseRadius * 0.3,
+            6, baseRadius * 0.6,
+            10, baseRadius,
+            14, baseRadius * 2,
+          ],
+          'heatmap-color': [
+            'interpolate', ['linear'], ['heatmap-density'],
+            0, 'rgba(255,0,0,0)',
+            0.1, 'rgba(255,80,80,0.15)',
+            0.3, 'rgba(255,50,50,0.3)',
+            0.5, 'rgba(255,30,30,0.45)',
+            0.7, 'rgba(220,20,20,0.55)',
+            1, 'rgba(180,0,0,0.65)',
+          ],
+          'heatmap-opacity': 0.8,
+        },
+      });
+
     if (predictions.length > 0) {
       // Create drift path
       const coordinates = [
