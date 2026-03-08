@@ -88,13 +88,13 @@ const Donate = () => {
               <CardContent className="space-y-4">
                 <div className="space-y-3 text-sm">
                   <div className="flex justify-between items-center">
-                    <span className="text-muted-foreground">Account Holder:</span>
+                    <span className="text-muted-foreground">Name:</span>
                     <div className="flex items-center gap-2">
-                      <span className="font-medium">Christos Taklis</span>
+                      <span className="font-medium text-xs">Merman Conservation Expeditions Ltd</span>
                       <Button
                         size="sm"
                         variant="ghost"
-                        onClick={() => copyToClipboard('Christos Taklis', 'Account holder name')}
+                        onClick={() => copyToClipboard('Merman Conservation Expeditions Ltd', 'Name')}
                       >
                         <Copy className="w-3 h-3" />
                       </Button>
@@ -102,13 +102,27 @@ const Donate = () => {
                   </div>
                   
                   <div className="flex justify-between items-center">
-                    <span className="text-muted-foreground">Bank:</span>
+                    <span className="text-muted-foreground">Account No:</span>
                     <div className="flex items-center gap-2">
-                      <span className="font-medium">Wise</span>
+                      <span className="font-medium">53869821</span>
                       <Button
                         size="sm"
                         variant="ghost"
-                        onClick={() => copyToClipboard('Wise', 'Bank name')}
+                        onClick={() => copyToClipboard('53869821', 'Account number')}
+                      >
+                        <Copy className="w-3 h-3" />
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  <div className="flex justify-between items-center">
+                    <span className="text-muted-foreground">Sort Code:</span>
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium">60 84 64</span>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => copyToClipboard('60 84 64', 'Sort code')}
                       >
                         <Copy className="w-3 h-3" />
                       </Button>
@@ -118,11 +132,11 @@ const Donate = () => {
                   <div className="flex justify-between items-center">
                     <span className="text-muted-foreground">IBAN:</span>
                     <div className="flex items-center gap-2">
-                      <span className="font-medium text-xs">GB28 TRWI 2314 7048 2178 15</span>
+                      <span className="font-medium text-xs">GB09 TRWI 6084 6453 8698 21</span>
                       <Button
                         size="sm"
                         variant="ghost"
-                        onClick={() => copyToClipboard('GB28 TRWI 2314 7048 2178 15', 'IBAN')}
+                        onClick={() => copyToClipboard('GB09 TRWI 6084 6453 8698 21', 'IBAN')}
                       >
                         <Copy className="w-3 h-3" />
                       </Button>
@@ -130,13 +144,13 @@ const Donate = () => {
                   </div>
                   
                   <div className="flex justify-between items-center">
-                    <span className="text-muted-foreground">BIC/SWIFT:</span>
+                    <span className="text-muted-foreground">Swift BIC:</span>
                     <div className="flex items-center gap-2">
                       <span className="font-medium">TRWIGB2LXXX</span>
                       <Button
                         size="sm"
                         variant="ghost"
-                        onClick={() => copyToClipboard('TRWIGB2LXXX', 'BIC/SWIFT')}
+                        onClick={() => copyToClipboard('TRWIGB2LXXX', 'Swift BIC')}
                       >
                         <Copy className="w-3 h-3" />
                       </Button>
@@ -144,8 +158,8 @@ const Donate = () => {
                   </div>
                   
                   <div className="pt-2 border-t">
-                    <span className="text-muted-foreground text-xs">Reference: </span>
-                    <span className="font-medium text-xs">Donation + Your Name</span>
+                    <span className="text-muted-foreground text-xs">Bank Address: </span>
+                    <span className="font-medium text-xs">56 Shoreditch High Street, London, UK</span>
                   </div>
                 </div>
               </CardContent>
