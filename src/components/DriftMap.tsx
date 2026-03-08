@@ -472,10 +472,8 @@ export const DriftMap = ({ observation, predictions, isVisible, isLoading = fals
     };
   }, []);
 
-  if (!isVisible) return null;
-
   return (
-    <Card className="w-full backdrop-blur-sm bg-card/90 border-border/50 shadow-xl">
+    <Card className={`w-full backdrop-blur-sm bg-card/90 border-border/50 shadow-xl ${!isVisible ? 'hidden' : ''}`}>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <MapPin className="w-5 h-5 text-ocean" />
