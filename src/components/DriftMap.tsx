@@ -76,7 +76,7 @@ export const DriftMap = ({ observation, predictions, isVisible, isLoading = fals
     if (!map.current || !observation || !map.current.isStyleLoaded()) return;
 
     // Clear existing layers and sources
-    ['drift-path', 'prediction-points', 'deflected-points', 'observation-point'].forEach(id => {
+    ['ghost-lines', 'ghost-points', 'drift-path', 'prediction-points', 'deflected-points', 'observation-point'].forEach(id => {
       if (map.current?.getLayer(id)) {
         map.current.removeLayer(id);
       }
@@ -224,13 +224,93 @@ export const DriftMap = ({ observation, predictions, isVisible, isLoading = fals
         });
       }
 
+      // Add ghost markers showing where drift would have gone (on land)
+      const deflectedWithOriginal = predictions.filter(p => p.hitLand && p.originalLatitude && p.originalLongitude);
+      if (deflectedWithOriginal.length > 0) {
+        // Ghost points (X marks on land)
+        map.current.addSource('ghost-points', {
+          type: 'geojson',
+          data: {
+            type: 'FeatureCollection',
+            features: deflectedWithOriginal.map(p => ({
+              type: 'Feature',
+              geometry: {
+                type: 'Point',
+                coordinates: [p.originalLongitude!, p.originalLatitude!],
+              },
+              properties: { day: p.day },
+            })),
+          },
+        });
+
+        map.current.addLayer({
+          id: 'ghost-points',
+          type: 'circle',
+          source: 'ghost-points',
+          paint: {
+            'circle-radius': 7,
+            'circle-color': '#ef4444',
+            'circle-stroke-width': 2,
+            'circle-stroke-color': '#ef4444',
+            'circle-opacity': 0.3,
+          },
+        });
+
+        // Dashed lines from deflected position to original (land) position
+        map.current.addSource('ghost-lines', {
+          type: 'geojson',
+          data: {
+            type: 'FeatureCollection',
+            features: deflectedWithOriginal.map(p => ({
+              type: 'Feature',
+              geometry: {
+                type: 'LineString',
+                coordinates: [
+                  [p.longitude, p.latitude],
+                  [p.originalLongitude!, p.originalLatitude!],
+                ],
+              },
+              properties: {},
+            })),
+          },
+        });
+
+        map.current.addLayer({
+          id: 'ghost-lines',
+          type: 'line',
+          source: 'ghost-lines',
+          paint: {
+            'line-color': '#ef4444',
+            'line-width': 2,
+            'line-opacity': 0.4,
+            'line-dasharray': [4, 4],
+          },
+        });
+      }
+
       // Fit map to show all points
       const bounds = new mapboxgl.LngLatBounds();
       bounds.extend([observation.longitude, observation.latitude]);
-      predictions.forEach(p => bounds.extend([p.longitude, p.latitude]));
+      predictions.forEach(p => {
+        bounds.extend([p.longitude, p.latitude]);
+        if (p.originalLatitude && p.originalLongitude) {
+          bounds.extend([p.originalLongitude, p.originalLatitude]);
+        }
+      });
       
       map.current.fitBounds(bounds, { padding: 50 });
     }
+
+    // Cursor pointers on interactive layers
+    const interactiveLayers = ['observation-point', 'prediction-points', 'deflected-points', 'ghost-points'];
+    interactiveLayers.forEach(layer => {
+      map.current!.on('mouseenter', layer, () => {
+        if (map.current) map.current.getCanvas().style.cursor = 'pointer';
+      });
+      map.current!.on('mouseleave', layer, () => {
+        if (map.current) map.current.getCanvas().style.cursor = '';
+      });
+    });
 
     // Add popups
     map.current.on('click', 'observation-point', (e) => {
@@ -276,6 +356,22 @@ export const DriftMap = ({ observation, predictions, isVisible, isLoading = fals
               <hr style="margin: 4px 0; border-color: #eee;" />
               <p class="text-xs">Distance: ${props?.distance.toFixed(1)} km</p>
               <p class="text-xs">Wind: ${props?.windSpeed.toFixed(1)} m/s</p>
+            </div>
+          `)
+          .addTo(map.current!);
+      }
+    });
+
+    map.current.on('click', 'ghost-points', (e) => {
+      if (e.features && e.features[0]) {
+        const props = e.features[0].properties;
+        new mapboxgl.Popup()
+          .setLngLat(e.lngLat)
+          .setHTML(`
+            <div class="p-2">
+              <h3 class="font-bold text-sm" style="color: #ef4444;">✕ Day ${props?.day} — Blocked by Land</h3>
+              <p class="text-xs">This is where the jellyfish would have drifted without the landmass.</p>
+              <p class="text-xs">The path was redirected to stay in water.</p>
             </div>
           `)
           .addTo(map.current!);
@@ -328,7 +424,7 @@ export const DriftMap = ({ observation, predictions, isVisible, isLoading = fals
         />
         
         {predictions.length > 0 && (
-          <div className="grid grid-cols-4 gap-2 text-xs">
+          <div className="grid grid-cols-5 gap-2 text-xs">
             <div className="flex items-center gap-1">
               <div className="w-3 h-3 bg-coral rounded-full"></div>
               <span>Current</span>
@@ -340,6 +436,10 @@ export const DriftMap = ({ observation, predictions, isVisible, isLoading = fals
             <div className="flex items-center gap-1">
               <div className="w-3 h-3 rounded-full" style={{ backgroundColor: '#f59e0b' }}></div>
               <span>Deflected</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="w-3 h-3 rounded-full opacity-30" style={{ backgroundColor: '#ef4444' }}></div>
+              <span>Blocked</span>
             </div>
             <div className="flex items-center gap-1">
               <div className="w-3 h-1 bg-accent"></div>

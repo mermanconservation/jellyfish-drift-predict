@@ -9,7 +9,9 @@ export interface DriftPrediction {
   windSpeed: number;
   windDirection: number;
   distance: number;
-  hitLand?: boolean; // true if this prediction was deflected from land
+  hitLand?: boolean;
+  originalLatitude?: number;  // where it would have gone if not blocked by land
+  originalLongitude?: number;
 }
 
 export interface JellyfishObservation {
@@ -46,15 +48,19 @@ export class DriftService {
       const driftDirection = avgWind.direction;
       
       // Try moving in the drift direction
-      let newPosition = this.applyDrift(currentLat, currentLon, driftDistance, driftDirection);
+      const rawPosition = this.applyDrift(currentLat, currentLon, driftDistance, driftDirection);
+      let newPosition = { ...rawPosition };
       let hitLand = false;
+      let originalLat: number | undefined;
+      let originalLon: number | undefined;
       
       // Check if new position is over water
       const isWater = await LandSeaService.isOverWater(newPosition.latitude, newPosition.longitude);
       
       if (!isWater) {
         hitLand = true;
-        
+        originalLat = rawPosition.latitude;
+        originalLon = rawPosition.longitude;
         // Binary search to find the last water point along this path
         const waterEdge = await this.findWaterEdge(currentLat, currentLon, driftDistance, driftDirection);
         
@@ -107,6 +113,8 @@ export class DriftService {
         windDirection: avgWind.direction,
         distance: totalDistance,
         hitLand,
+        originalLatitude: originalLat,
+        originalLongitude: originalLon,
       });
     }
     
