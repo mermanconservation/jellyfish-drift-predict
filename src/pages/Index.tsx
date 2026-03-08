@@ -131,50 +131,6 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Scientific Information */}
-        <div className="mt-16 max-w-4xl mx-auto">
-          <Card className="backdrop-blur-sm bg-card/90 border-border/50">
-            <CardContent className="p-8 space-y-6">
-              <h2 className="text-2xl font-bold text-center bg-gradient-to-r from-ocean to-accent bg-clip-text text-transparent">
-                About Pelagia noctiluca
-              </h2>
-              
-              <div className="grid md:grid-cols-2 gap-6 text-sm">
-                <div className="space-y-3">
-                  <h3 className="font-semibold text-ocean">Physical Characteristics</h3>
-                  <p className="text-muted-foreground">
-                    The mauve stinger is a small jellyfish with a bell diameter of 3-12 cm. 
-                    It has a distinctive purple or mauve coloration and is known for its painful sting.
-                  </p>
-                </div>
-                
-                <div className="space-y-3">
-                  <h3 className="font-semibold text-ocean">Distribution & Habitat</h3>
-                  <p className="text-muted-foreground">
-                    Found in warm and temperate waters worldwide, including the Mediterranean Sea, 
-                    Atlantic Ocean, and other marine environments.
-                  </p>
-                </div>
-                
-                <div className="space-y-3">
-                  <h3 className="font-semibold text-ocean">Movement Patterns</h3>
-                  <p className="text-muted-foreground">
-                    Jellyfish are weak swimmers and drift primarily with ocean currents and wind patterns. 
-                    They move at approximately 3% of wind speed plus underlying current velocity.
-                  </p>
-                </div>
-                
-                <div className="space-y-3">
-                  <h3 className="font-semibold text-ocean">Ecological Impact</h3>
-                  <p className="text-muted-foreground">
-                    Understanding their movement helps predict interactions with fishing activities, 
-                    tourism, and marine ecosystems.
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
       </div>
     </div>
   );
