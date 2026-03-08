@@ -113,6 +113,8 @@ export class DriftService {
         windDirection: avgWind.direction,
         distance: totalDistance,
         hitLand,
+        originalLatitude: originalLat,
+        originalLongitude: originalLon,
       });
     }
     
