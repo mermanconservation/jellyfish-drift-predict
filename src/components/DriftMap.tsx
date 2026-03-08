@@ -76,7 +76,7 @@ export const DriftMap = ({ observation, predictions, isVisible, isLoading = fals
     if (!map.current || !observation || !map.current.isStyleLoaded()) return;
 
     // Clear existing layers and sources
-    ['drift-path', 'prediction-points', 'observation-point'].forEach(id => {
+    ['drift-path', 'prediction-points', 'deflected-points', 'observation-point'].forEach(id => {
       if (map.current?.getLayer(id)) {
         map.current.removeLayer(id);
       }
@@ -144,12 +144,16 @@ export const DriftMap = ({ observation, predictions, isVisible, isLoading = fals
         },
       });
 
-      // Add prediction points
+      // Separate normal and deflected predictions
+      const normalPredictions = predictions.filter(p => !p.hitLand);
+      const deflectedPredictions = predictions.filter(p => p.hitLand);
+
+      // Add normal prediction points
       map.current.addSource('prediction-points', {
         type: 'geojson',
         data: {
           type: 'FeatureCollection',
-          features: predictions.map(p => ({
+          features: normalPredictions.map(p => ({
             type: 'Feature',
             geometry: {
               type: 'Point',
@@ -177,18 +181,48 @@ export const DriftMap = ({ observation, predictions, isVisible, isLoading = fals
             0, 6,
             1, 10,
           ],
-          'circle-color': [
-            'interpolate',
-            ['linear'],
-            ['get', 'day'],
-            1, '#4ecdc4',
-            5, '#45b7aa',
-          ],
+          'circle-color': '#4ecdc4',
           'circle-stroke-width': 2,
           'circle-stroke-color': '#ffffff',
           'circle-opacity': 0.7,
         },
       });
+
+      // Add deflected (land-avoidance) points in orange
+      if (deflectedPredictions.length > 0) {
+        map.current.addSource('deflected-points', {
+          type: 'geojson',
+          data: {
+            type: 'FeatureCollection',
+            features: deflectedPredictions.map(p => ({
+              type: 'Feature',
+              geometry: {
+                type: 'Point',
+                coordinates: [p.longitude, p.latitude],
+              },
+              properties: {
+                day: p.day,
+                confidence: p.confidence,
+                distance: p.distance,
+                windSpeed: p.windSpeed,
+              },
+            })),
+          },
+        });
+
+        map.current.addLayer({
+          id: 'deflected-points',
+          type: 'circle',
+          source: 'deflected-points',
+          paint: {
+            'circle-radius': 10,
+            'circle-color': '#f59e0b',
+            'circle-stroke-width': 3,
+            'circle-stroke-color': '#ffffff',
+            'circle-opacity': 0.9,
+          },
+        });
+      }
 
       // Fit map to show all points
       const bounds = new mapboxgl.LngLatBounds();
@@ -275,7 +309,7 @@ export const DriftMap = ({ observation, predictions, isVisible, isLoading = fals
         />
         
         {predictions.length > 0 && (
-          <div className="grid grid-cols-3 gap-2 text-xs">
+          <div className="grid grid-cols-4 gap-2 text-xs">
             <div className="flex items-center gap-1">
               <div className="w-3 h-3 bg-coral rounded-full"></div>
               <span>Current</span>
@@ -283,6 +317,10 @@ export const DriftMap = ({ observation, predictions, isVisible, isLoading = fals
             <div className="flex items-center gap-1">
               <div className="w-3 h-3 bg-accent rounded-full"></div>
               <span>Predicted</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: '#f59e0b' }}></div>
+              <span>Deflected</span>
             </div>
             <div className="flex items-center gap-1">
               <div className="w-3 h-1 bg-accent"></div>
