@@ -29,26 +29,6 @@ const Donate = () => {
         </div>
         
         <div className="max-w-4xl mx-auto space-y-8">
-          {/* Header */}
-          <div className="text-center space-y-4">
-            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 text-sm text-primary-foreground">
-              <Heart className="w-4 h-4 text-coral" />
-              Support Marine Conservation
-            </div>
-            
-            <h1 className="text-4xl lg:text-6xl font-bold text-primary-foreground leading-tight">
-              Support Our
-              <span className="block bg-gradient-to-r from-accent to-coral bg-clip-text text-transparent">
-                Mission
-              </span>
-            </h1>
-            
-            <p className="text-xl text-primary-foreground/90 max-w-2xl mx-auto leading-relaxed">
-              Help us continue our research on jellyfish migration patterns and marine conservation efforts. 
-              Every donation supports scientific research and ocean protection.
-            </p>
-          </div>
-
           {/* Donation Methods */}
           <div className="grid md:grid-cols-3 gap-6">
             {/* Stripe Card Payment */}
