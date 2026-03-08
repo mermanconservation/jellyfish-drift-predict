@@ -152,37 +152,6 @@ const Donate = () => {
             </Card>
           </div>
 
-          {/* Impact Section */}
-          <Card className="backdrop-blur-sm bg-card/90 border-border/50 mt-12">
-            <CardContent className="p-8 text-center space-y-6">
-              <h2 className="text-2xl font-bold bg-gradient-to-r from-ocean to-accent bg-clip-text text-transparent">
-                Your Impact
-              </h2>
-              
-              <div className="grid md:grid-cols-3 gap-6 text-sm">
-                <div className="space-y-2">
-                  <h3 className="font-semibold text-ocean">Research Equipment</h3>
-                  <p className="text-muted-foreground">
-                    Fund specialized marine monitoring equipment and tracking devices for jellyfish research.
-                  </p>
-                </div>
-                
-                <div className="space-y-2">
-                  <h3 className="font-semibold text-ocean">Data Collection</h3>
-                  <p className="text-muted-foreground">
-                    Support field research expeditions and real-time data collection efforts.
-                  </p>
-                </div>
-                
-                <div className="space-y-2">
-                  <h3 className="font-semibold text-ocean">Conservation Education</h3>
-                  <p className="text-muted-foreground">
-                    Help create educational materials and public awareness campaigns about marine conservation.
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
         </div>
       </div>
     </div>
