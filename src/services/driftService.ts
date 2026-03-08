@@ -48,8 +48,11 @@ export class DriftService {
       const driftDirection = avgWind.direction;
       
       // Try moving in the drift direction
-      let newPosition = this.applyDrift(currentLat, currentLon, driftDistance, driftDirection);
+      const rawPosition = this.applyDrift(currentLat, currentLon, driftDistance, driftDirection);
+      let newPosition = { ...rawPosition };
       let hitLand = false;
+      let originalLat: number | undefined;
+      let originalLon: number | undefined;
       
       // Check if new position is over water
       const isWater = await LandSeaService.isOverWater(newPosition.latitude, newPosition.longitude);
