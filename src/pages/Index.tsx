@@ -112,46 +112,41 @@ const Index = () => {
         </Button>
       </div>
 
-      {/* Hero Section - compact */}
-      <div className="relative overflow-hidden">
-        <div className="absolute inset-0 ocean-gradient opacity-60" />
-        
-        <div className="relative z-10 container mx-auto px-6 py-10 text-center">
-          <div className="max-w-4xl mx-auto space-y-4">
-            <h1 className="text-4xl lg:text-5xl font-bold text-primary-foreground leading-tight">
-              Jellyfish
-              <span className="block bg-gradient-to-r from-accent to-coral bg-clip-text text-transparent">
-                Drift Predictor
-              </span>
-            </h1>
-            
-            <p className="text-base lg:text-lg text-primary-foreground/90 max-w-xl mx-auto leading-relaxed">
-              Track <em>Pelagia noctiluca</em> sightings and predict drift using real-time wind & ocean current models
-            </p>
+      {/* Hero Section - compact, same bg as page */}
+      <div className="container mx-auto px-4 sm:px-6 pt-8 pb-4 text-center">
+        <div className="max-w-3xl mx-auto space-y-3">
+          <h1 className="text-3xl sm:text-4xl font-bold text-primary-foreground leading-tight">
+            Jellyfish
+            <span className="block bg-gradient-to-r from-accent to-coral bg-clip-text text-transparent">
+              Drift Predictor
+            </span>
+          </h1>
+          
+          <p className="text-sm sm:text-base text-primary-foreground/80 max-w-md mx-auto">
+            Track <em>Pelagia noctiluca</em> sightings and predict drift using real-time wind & ocean current models
+          </p>
 
-            {/* Compact feature highlights */}
-            <div className="flex flex-wrap justify-center gap-3 mt-6">
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-3 py-1.5 text-xs text-primary-foreground">
-                <Wind className="w-3.5 h-3.5 text-accent" />
-                Real-time Weather
-              </div>
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-3 py-1.5 text-xs text-primary-foreground">
-                <Waves className="w-3.5 h-3.5 text-coral" />
-                Drift Modeling
-              </div>
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-3 py-1.5 text-xs text-primary-foreground">
-                <Fish className="w-3.5 h-3.5 text-wave" />
-                Species-Specific
-              </div>
+          <div className="flex flex-wrap justify-center gap-2 pt-2">
+            <div className="flex items-center gap-1.5 bg-white/10 rounded-full px-2.5 py-1 text-xs text-primary-foreground">
+              <Wind className="w-3 h-3 text-accent" />
+              Weather
+            </div>
+            <div className="flex items-center gap-1.5 bg-white/10 rounded-full px-2.5 py-1 text-xs text-primary-foreground">
+              <Waves className="w-3 h-3 text-coral" />
+              Drift
+            </div>
+            <div className="flex items-center gap-1.5 bg-white/10 rounded-full px-2.5 py-1 text-xs text-primary-foreground">
+              <Fish className="w-3 h-3 text-wave" />
+              Species
             </div>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-6 py-8">
-        <div className="grid lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
-          <div className="space-y-6">
+      <div className="container mx-auto px-4 sm:px-6 py-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 max-w-6xl mx-auto">
+          <div className="space-y-4">
             <JellyfishForm 
               onObservationSubmit={handleObservationSubmit}
               isLoading={isLoading}
@@ -163,7 +158,7 @@ const Index = () => {
             />
           </div>
 
-          <div className="space-y-6">
+          <div className="space-y-4">
             <DriftMap 
               observation={observation}
               predictions={predictions}
@@ -173,13 +168,13 @@ const Index = () => {
             
             {!showResults && !isLoading && (
               <Card className="backdrop-blur-sm bg-card/90 border-border/50">
-                <CardContent className="p-8 text-center space-y-4">
-                  <div className="w-16 h-16 mx-auto bg-muted rounded-full flex items-center justify-center">
-                    <Fish className="w-8 h-8 text-muted-foreground" />
+                <CardContent className="p-5 text-center space-y-3">
+                  <div className="w-12 h-12 mx-auto bg-muted rounded-full flex items-center justify-center">
+                    <Fish className="w-6 h-6 text-muted-foreground" />
                   </div>
-                  <h3 className="text-lg font-semibold">Ready for Analysis</h3>
-                  <p className="text-muted-foreground">
-                    Enter jellyfish observation data to generate drift predictions and visualize movement patterns on an interactive map.
+                  <h3 className="text-sm font-semibold">Ready for Analysis</h3>
+                  <p className="text-xs text-muted-foreground">
+                    Enter observation data to generate drift predictions on an interactive map.
                   </p>
                 </CardContent>
               </Card>
