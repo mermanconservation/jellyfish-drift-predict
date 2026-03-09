@@ -1,8 +1,10 @@
 import { DriftPrediction } from '@/services/driftService';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Waves, Wind, MapPin, Clock } from 'lucide-react';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { Waves, Wind, MapPin, Clock, ChevronDown } from 'lucide-react';
+import { useState } from 'react';
 
 interface JellyfishObservation {
   latitude: number;
@@ -18,6 +20,8 @@ interface DriftResultsProps {
 }
 
 export const DriftResults = ({ observation, predictions, isVisible }: DriftResultsProps) => {
+  const [isOpen, setIsOpen] = useState(false);
+
   if (!isVisible || predictions.length === 0) return null;
 
   const maxDistance = Math.max(...predictions.map(p => p.distance));
@@ -25,102 +29,80 @@ export const DriftResults = ({ observation, predictions, isVisible }: DriftResul
 
   return (
     <Card className="w-full backdrop-blur-sm bg-card/90 border-border/50 shadow-xl">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Waves className="w-5 h-5 text-ocean" />
-          Drift Predictions
-        </CardTitle>
-        <div className="grid grid-cols-2 gap-4 text-sm">
-          <div className="space-y-1">
-            <div className="text-muted-foreground">Initial Count</div>
-            <div className="font-semibold">{observation.jellyfishCount} jellyfish</div>
+      <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+        <CollapsibleTrigger className="w-full">
+          <div className="flex items-center justify-between p-3 hover:bg-muted/20 transition-colors rounded-t-lg">
+            <div className="flex items-center gap-2">
+              <Waves className="w-4 h-4 text-ocean" />
+              <span className="text-sm font-semibold">Drift Predictions</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-muted-foreground">{maxDistance.toFixed(1)} km · {(avgConfidence * 100).toFixed(0)}%</span>
+              <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+            </div>
           </div>
-          <div className="space-y-1">
-            <div className="text-muted-foreground">Max Distance</div>
-            <div className="font-semibold">{maxDistance.toFixed(1)} km</div>
-          </div>
-        </div>
-      </CardHeader>
-      
-      <CardContent className="space-y-4">
-        {/* Overall Confidence */}
-        <div className="space-y-2">
-          <div className="flex justify-between items-center text-sm">
-            <span className="text-muted-foreground">Prediction Confidence</span>
-            <span className="font-medium">{(avgConfidence * 100).toFixed(0)}%</span>
-          </div>
-          <Progress value={avgConfidence * 100} className="h-2" />
-        </div>
+        </CollapsibleTrigger>
 
-        {/* Daily Predictions */}
-        <div className="space-y-3">
-          <h3 className="text-sm font-medium text-foreground">Daily Predictions</h3>
-          
-          {predictions.map((prediction, index) => (
-            <div 
-              key={prediction.day}
-              className="border border-border/50 rounded-lg p-3 space-y-2 hover:bg-muted/20 transition-colors"
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-ocean" />
-                  <span className="font-medium">Day {prediction.day}</span>
-                </div>
-                <Badge 
-                  variant={prediction.confidence > 0.7 ? "default" : prediction.confidence > 0.4 ? "secondary" : "outline"}
-                  className="text-xs"
-                >
-                  {(prediction.confidence * 100).toFixed(0)}% confidence
-                </Badge>
+        <CollapsibleContent>
+          <CardContent className="px-3 pb-3 pt-0 space-y-3">
+            {/* Summary row */}
+            <div className="flex gap-3 text-xs">
+              <div className="flex-1 bg-muted/30 rounded px-2 py-1.5">
+                <div className="text-muted-foreground">Count</div>
+                <div className="font-semibold">{observation.jellyfishCount}</div>
               </div>
-              
-              <div className="grid grid-cols-2 gap-4 text-xs">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-1 text-muted-foreground">
-                    <MapPin className="w-3 h-3" />
-                    Position
-                  </div>
-                  <div className="font-mono">
-                    {prediction.latitude.toFixed(4)}°N<br />
-                    {prediction.longitude.toFixed(4)}°E
-                  </div>
-                </div>
-                
-                <div className="space-y-1">
-                  <div className="flex items-center gap-1 text-muted-foreground">
-                    <Wind className="w-3 h-3" />
-                    Conditions
-                  </div>
-                  <div>
-                    {prediction.windSpeed.toFixed(1)} m/s<br />
-                    {prediction.windDirection.toFixed(0)}° wind
-                  </div>
-                </div>
+              <div className="flex-1 bg-muted/30 rounded px-2 py-1.5">
+                <div className="text-muted-foreground">Max Dist</div>
+                <div className="font-semibold">{maxDistance.toFixed(1)} km</div>
               </div>
-              
-              <div className="flex justify-between items-center pt-1 border-t border-border/30">
-                <span className="text-xs text-muted-foreground">
-                  Distance from origin
-                </span>
-                <span className="text-xs font-medium">
-                  {prediction.distance.toFixed(1)} km
-                </span>
+              <div className="flex-1 bg-muted/30 rounded px-2 py-1.5">
+                <div className="text-muted-foreground">Confidence</div>
+                <div className="font-semibold">{(avgConfidence * 100).toFixed(0)}%</div>
               </div>
             </div>
-          ))}
-        </div>
 
-        {/* Environmental Factors Notice */}
-        <div className="bg-muted/30 rounded-lg p-3 space-y-2">
-          <h4 className="text-sm font-medium text-foreground">Environmental Factors</h4>
-          <div className="text-xs text-muted-foreground space-y-1">
-            <p>• Predictions based on wind patterns and ocean surface currents</p>
-            <p>• Pelagia noctiluca drift at ~3% of wind speed</p>
-            <p>• Confidence decreases over time due to environmental uncertainty</p>
-            <p>• Actual movement may vary due to local currents and depth changes</p>
-          </div>
-        </div>
-      </CardContent>
+            <Progress value={avgConfidence * 100} className="h-1.5" />
+
+            {/* Daily Predictions */}
+            <div className="space-y-2">
+              {predictions.map((prediction) => (
+                <div 
+                  key={prediction.day}
+                  className="border border-border/50 rounded p-2 space-y-1.5 text-xs"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1.5">
+                      <Clock className="w-3 h-3 text-ocean" />
+                      <span className="font-medium">Day {prediction.day}</span>
+                    </div>
+                    <Badge 
+                      variant={prediction.confidence > 0.7 ? "default" : prediction.confidence > 0.4 ? "secondary" : "outline"}
+                      className="text-[10px] px-1.5 py-0"
+                    >
+                      {(prediction.confidence * 100).toFixed(0)}%
+                    </Badge>
+                  </div>
+                  
+                  <div className="flex justify-between text-[11px]">
+                    <span className="text-muted-foreground flex items-center gap-1">
+                      <MapPin className="w-2.5 h-2.5" />
+                      {prediction.latitude.toFixed(4)}°N, {prediction.longitude.toFixed(4)}°E
+                    </span>
+                    <span className="text-muted-foreground flex items-center gap-1">
+                      <Wind className="w-2.5 h-2.5" />
+                      {prediction.windSpeed.toFixed(1)} m/s · {prediction.distance.toFixed(1)} km
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="text-[10px] text-muted-foreground bg-muted/20 rounded p-2">
+              Predictions based on wind patterns & ocean currents. Confidence decreases over time.
+            </div>
+          </CardContent>
+        </CollapsibleContent>
+      </Collapsible>
     </Card>
   );
 };
