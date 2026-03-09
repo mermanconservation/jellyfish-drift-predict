@@ -112,37 +112,32 @@ const Index = () => {
         </Button>
       </div>
 
-      {/* Hero Section - compact */}
-      <div className="relative overflow-hidden">
-        <div className="absolute inset-0 ocean-gradient opacity-60" />
-        
-        <div className="relative z-10 container mx-auto px-6 py-10 text-center">
-          <div className="max-w-4xl mx-auto space-y-4">
-            <h1 className="text-4xl lg:text-5xl font-bold text-primary-foreground leading-tight">
-              Jellyfish
-              <span className="block bg-gradient-to-r from-accent to-coral bg-clip-text text-transparent">
-                Drift Predictor
-              </span>
-            </h1>
-            
-            <p className="text-base lg:text-lg text-primary-foreground/90 max-w-xl mx-auto leading-relaxed">
-              Track <em>Pelagia noctiluca</em> sightings and predict drift using real-time wind & ocean current models
-            </p>
+      {/* Hero Section - compact, same bg as page */}
+      <div className="container mx-auto px-4 sm:px-6 pt-8 pb-4 text-center">
+        <div className="max-w-3xl mx-auto space-y-3">
+          <h1 className="text-3xl sm:text-4xl font-bold text-primary-foreground leading-tight">
+            Jellyfish
+            <span className="block bg-gradient-to-r from-accent to-coral bg-clip-text text-transparent">
+              Drift Predictor
+            </span>
+          </h1>
+          
+          <p className="text-sm sm:text-base text-primary-foreground/80 max-w-md mx-auto">
+            Track <em>Pelagia noctiluca</em> sightings and predict drift using real-time wind & ocean current models
+          </p>
 
-            {/* Compact feature highlights */}
-            <div className="flex flex-wrap justify-center gap-3 mt-6">
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-3 py-1.5 text-xs text-primary-foreground">
-                <Wind className="w-3.5 h-3.5 text-accent" />
-                Real-time Weather
-              </div>
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-3 py-1.5 text-xs text-primary-foreground">
-                <Waves className="w-3.5 h-3.5 text-coral" />
-                Drift Modeling
-              </div>
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-3 py-1.5 text-xs text-primary-foreground">
-                <Fish className="w-3.5 h-3.5 text-wave" />
-                Species-Specific
-              </div>
+          <div className="flex flex-wrap justify-center gap-2 pt-2">
+            <div className="flex items-center gap-1.5 bg-white/10 rounded-full px-2.5 py-1 text-xs text-primary-foreground">
+              <Wind className="w-3 h-3 text-accent" />
+              Weather
+            </div>
+            <div className="flex items-center gap-1.5 bg-white/10 rounded-full px-2.5 py-1 text-xs text-primary-foreground">
+              <Waves className="w-3 h-3 text-coral" />
+              Drift
+            </div>
+            <div className="flex items-center gap-1.5 bg-white/10 rounded-full px-2.5 py-1 text-xs text-primary-foreground">
+              <Fish className="w-3 h-3 text-wave" />
+              Species
             </div>
           </div>
         </div>
