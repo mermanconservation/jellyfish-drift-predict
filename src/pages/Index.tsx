@@ -144,9 +144,9 @@ const Index = () => {
       </div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-6 py-8">
-        <div className="grid lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
-          <div className="space-y-6">
+      <div className="container mx-auto px-4 sm:px-6 py-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 max-w-6xl mx-auto">
+          <div className="space-y-4">
             <JellyfishForm 
               onObservationSubmit={handleObservationSubmit}
               isLoading={isLoading}
@@ -158,7 +158,7 @@ const Index = () => {
             />
           </div>
 
-          <div className="space-y-6">
+          <div className="space-y-4">
             <DriftMap 
               observation={observation}
               predictions={predictions}
@@ -168,13 +168,13 @@ const Index = () => {
             
             {!showResults && !isLoading && (
               <Card className="backdrop-blur-sm bg-card/90 border-border/50">
-                <CardContent className="p-8 text-center space-y-4">
-                  <div className="w-16 h-16 mx-auto bg-muted rounded-full flex items-center justify-center">
-                    <Fish className="w-8 h-8 text-muted-foreground" />
+                <CardContent className="p-5 text-center space-y-3">
+                  <div className="w-12 h-12 mx-auto bg-muted rounded-full flex items-center justify-center">
+                    <Fish className="w-6 h-6 text-muted-foreground" />
                   </div>
-                  <h3 className="text-lg font-semibold">Ready for Analysis</h3>
-                  <p className="text-muted-foreground">
-                    Enter jellyfish observation data to generate drift predictions and visualize movement patterns on an interactive map.
+                  <h3 className="text-sm font-semibold">Ready for Analysis</h3>
+                  <p className="text-xs text-muted-foreground">
+                    Enter observation data to generate drift predictions on an interactive map.
                   </p>
                 </CardContent>
               </Card>

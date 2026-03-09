@@ -89,21 +89,21 @@ export const JellyfishForm = ({ onObservationSubmit, isLoading }: JellyfishFormP
   };
 
   return (
-    <Card className="w-full max-w-md mx-auto backdrop-blur-sm bg-card/90 border-border/50 shadow-xl">
-      <CardHeader className="text-center">
-        <div className="mx-auto mb-4 w-16 h-16 bg-coral rounded-full flex items-center justify-center">
-          <Fish className="w-8 h-8 text-coral-foreground" />
+    <Card className="w-full backdrop-blur-sm bg-card/90 border-border/50 shadow-xl">
+      <CardHeader className="pb-2 pt-4 px-4 text-center">
+        <div className="mx-auto mb-2 w-10 h-10 bg-coral rounded-full flex items-center justify-center">
+          <Fish className="w-5 h-5 text-coral-foreground" />
         </div>
-        <CardTitle className="text-2xl font-bold bg-gradient-to-r from-ocean to-accent bg-clip-text text-transparent">
+        <CardTitle className="text-lg font-bold bg-gradient-to-r from-ocean to-accent bg-clip-text text-transparent">
           Jellyfish Tracker
         </CardTitle>
-        <CardDescription className="text-muted-foreground">
-          Track Pelagia noctiluca sightings and predict drift patterns
+        <CardDescription className="text-xs text-muted-foreground">
+          Track sightings and predict drift patterns
         </CardDescription>
       </CardHeader>
       
-      <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <CardContent className="px-4 pb-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {/* Location Section */}
           <div className="space-y-4">
             <div className="flex items-center gap-2 text-sm font-medium text-foreground">
